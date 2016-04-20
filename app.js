@@ -56,3 +56,12 @@ controls.tool = function(cx) {
 
   return elt("span", null, "Tool: ", select);
 };
+
+//to put line ends in the right place, find coordinates a mouse event corresponds to
+//get.BCR tells us where element is shown relative to top-left corner of screen
+function relativePos(event, element {
+  var rect = element.getBoundingClientRect();
+  return {x: Math.floor(event.clientX - rect.left),
+          y: Math.floor(event.clientY - rect.top)};
+})
+
