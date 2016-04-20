@@ -178,10 +178,51 @@ controls.openURL = function(cx) {
   var input = elt("input", {type: "text"});
   var form = elt("form", null,
                  "Open URL: ", input,
-                  elt("button", type: "submit"}, load));
+                  elt("button", {type: "submit"}, "load"));
   form.addEventListener("submit", function(event) {
     event.preventDefault();
     loadImageURL(cx, form.querySelector("input").value);
   });
   return form;
 };
+
+tools.Text = function(event, cx) {
+  var text = prompt("Text:", "");
+  if(text) {
+    var pos = relativePos(event, cx.canvas);
+    cx.font = Math.max(7, cx.lineWidth) + "px sans-serif";
+    cx.fillText(text, pos.x, pos.y);
+  }
+};
+
+//25-second interval while mousedown to spit out dots
+//trackDrag keeps current mouse position and turns off interval on mouseup
+tools.Spray = function(event, cx) {
+  var radius = cx.lineWidth / 2;
+  var area = radius * radius * Math.PI;
+  var dotsPerTick = Math.ceil(area / 30);
+
+  var currentPos = relativePos(event, cx.canvas);
+  var spray = setInterval(function() {
+    for (var i = 0; i < dotsPerTick; i++) {
+      var offset = randomPointInRadius(radius);
+      cx.fillRect(currentPos.x + offset.x,
+                  currentPos.y + offset.y, 1, 1);
+    }
+  }, 25);
+  trackDrag(function(event) {
+    currentPos = relativePos(event, cx.canvas);
+  }, function() {
+    clearInterval(spray);
+  });
+};
+
+//loop for uniform distribution of dots
+function randomPointInRadius(radius) {
+  for (;;) {
+    var x = Math.random() * 2 - 1;
+    var y = Math.random() * 2 -1;
+    if (x * x + y * y <= 1)
+      return {x: x * radius, y: y * radius};
+  }
+}
