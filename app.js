@@ -5,7 +5,7 @@ function elt(name, attributes) {
 
   if (attributes) {
     for (var attr in attributes)
-      if (attributes hasOwnProperty(attr))
+      if (attributes.hasOwnProperty(attr))
         node.setAttribute(attr, attributes[attr]);
   }
 
@@ -26,10 +26,10 @@ var controls = Object.create(null);
 //canvas and controls wrapped in div elements with classes for styling
 function createPaint(parent) {
   var canvas = elt("canvas", {width: 500, height: 300});
-  var cx = canvas.getContent("2d");
+  var cx = canvas.getContext("2d");
   var toolbar = elt("div", {class: "toolbar"});
   for (var name in controls)
-    toolbar.appendChild.(controls[name](cx));
+    toolbar.appendChild(controls[name](cx));
 
   var panel = elt("div", {class: "picturepanel"}, canvas);
   parent.appendChild(elt("div", null, panel, toolbar));
@@ -59,11 +59,11 @@ controls.tool = function(cx) {
 
 //to put line ends in the right place, find coordinates a mouse event corresponds to
 //get.BCR tells us where element is shown relative to top-left corner of screen
-function relativePos(event, element {
+function relativePos(event, element) {
   var rect = element.getBoundingClientRect();
   return {x: Math.floor(event.clientX - rect.left),
           y: Math.floor(event.clientY - rect.top)};
-})
+}
 
 //listen for mousemove as long as mouse is held down
 function trackDrag(onMove, onEnd) {
