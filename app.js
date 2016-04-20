@@ -173,3 +173,15 @@ controls.openFile = function(cx) {
   });
   return elt("div", null, "Open file: ", input);
 };
+
+controls.openURL = function(cx) {
+  var input = elt("input", {type: "text"});
+  var form = elt("form", null,
+                 "Open URL: ", input,
+                  elt("button", type: "submit"}, load));
+  form.addEventListener("submit", function(event) {
+    event.preventDefault();
+    loadImageURL(cx, form.querySelector("input").value);
+  });
+  return form;
+};
