@@ -113,7 +113,6 @@ controls.color = function(cx) {
   return elt("span", null, "Color: ", input);
 };
 
-//
 controls.brushSize = function(cx) {
   var select = elt("select");
   var sizes = [1, 2, 3, 5, 8, 12, 25, 35, 50, 75, 100];
@@ -125,4 +124,24 @@ controls.brushSize = function(cx) {
     cx.lineWidth = select.value;
   });
   return elt("span", null, "Brush size: ", select);
+};
+
+//links sits pointing at wrong thing until user mouses over then it updates to current picture - works better for small pictures
+controls.save = function(cx) {
+  var link = elt("a", {href: "/"}, "Save");
+  function update() {
+    try {
+      link.href = cx.canvas.toDataURL();
+    }
+    catch (e) {
+      if (e instanceof SecurityError)
+        link.href = "javascript:alert(" +
+          JSON.stringify("Can't save:" + e.toString()) + ")";
+      else
+        throw e;
+    }
+  }
+link.addEventListener("mouseover", update);
+link.addEventListener("focus", update);
+return link;
 };
