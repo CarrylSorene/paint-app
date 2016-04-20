@@ -77,3 +77,29 @@ function trackDrag(onMove, onEnd) {
   addEventListener("mouseup", end);
 }
 
+//set to round so ends of path are not default square form - so separately-drawn lines look like a single line - shows more at bigger line widths if square
+//draw line each time mouse is down
+//onEnd not required, but used so erase tool can be implemented on top of line tool
+tools.Line = function(event, cx, onEnd) {
+  cx.lineCap = "round";
+
+  var pos = relativePos(event, cx.canvas);
+  trackDrag(function(event) {
+    cx.beginPath();
+    cx.moveTo(pos.x, pos.y);
+    pos = relativePos(event, cx.canvas);
+    cx.lineTo(pos.x, pos.y);
+    cx.stroke();
+  }, onEnd);
+};
+
+//gCO influences way drawing operations change color of pixels they touch
+//source-over means they're overlaid
+//erase property makes them transparent again
+tools.Erase = function(event, cx) {
+  cx.globalCompositeOperation = "destination-out";
+  tools.Line(event, cx, function() {
+    cx.globalCompositeOperation = "source-over";
+  });
+};
+
